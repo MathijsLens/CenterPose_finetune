@@ -54,23 +54,23 @@ def main(opt):
     trainer.set_device(opt.gpus, opt.chunk_sizes, opt.device)
 
     print('Setting up data...')
-    # val_dataset = Dataset(opt, 'val')
-    # if opt.tracking_task == True:
-    #     val_dataset_subset = torch.utils.data.Subset(val_dataset, range(0, len(val_dataset), 15))
-    # else:
-    #     val_dataset_subset = val_dataset
+    val_dataset = Dataset(opt, 'val')
+    if opt.tracking_task == True:
+        val_dataset_subset = torch.utils.data.Subset(val_dataset, range(0, len(val_dataset), 15))
+    else:
+        val_dataset_subset = val_dataset
 
-    # val_loader = torch.utils.data.DataLoader(
-    #     val_dataset_subset,
-    #     batch_size=1,
-    #     shuffle=False,
-    #     num_workers=0,
-    #     pin_memory=True,
-    #     collate_fn=collate_fn_filtered
-    # )
+    val_loader = torch.utils.data.DataLoader(
+        val_dataset_subset,
+        batch_size=1,
+        shuffle=False,
+        num_workers=0,
+        pin_memory=True,
+        collate_fn=collate_fn_filtered
+    )
 
-    # if opt.test:
-    #     _, preds, _ = trainer.val(0, val_loader)
+    if opt.test:
+        _, preds, _ = trainer.val(0, val_loader)
 
     train_loader = torch.utils.data.DataLoader(
         Dataset(opt, 'train'),
@@ -94,6 +94,8 @@ def main(opt):
     # hm_hp: keypoint heatmaps
     # hp_offset: sub-pixel offsets for keypoints
     # scale/obj_scale: relative cuboid dimensions
+    
+    
     # for index, batch in enumerate(train_loader):
     #     for k in batch:
     #         print(k)
@@ -183,7 +185,7 @@ if __name__ == '__main__':
     opt.save_all = True
 
     # # To continue
-    opt.resume = True
+    # opt.resume = True
     # opt.load_model = ""
 
     # Copy from parse function from opts.py
