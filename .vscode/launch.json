@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "python": " /home/mathijs/miniconda3/envs/CenterPose/bin/python",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type":"python",
+            "args": ["--demo","../images/CenterPose/chair", "--arch", "dlav1_34",
+              "--load_model", "/home/mathijs/ford/code/CenterPose/CenterPose/models/CenterPose/cereal_box_v1_140.pth",
+               "--debug", "4"],
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            
+        }
+    ]
+}
