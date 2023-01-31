@@ -2,8 +2,8 @@ numba
 progress
 matplotlib
 scipy>=1.4.1
-torch==1.1.0
-torchvision==0.3.0
+# # torch==1.1.0
+# torchvision==0.3.0
 albumentations
 pyrr
 simplejson
@@ -14,5 +14,5 @@ scikit-learn==0.22.2
 filterpy>=1.4.5
 setuptools>=49.6.0
 frozendict
-tensorflow
+# tensorflow
 requests

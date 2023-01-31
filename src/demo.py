@@ -2,7 +2,7 @@
 # Copyright (c) 2021 NVIDIA Corporation. All rights reserved.
 # This work is licensed under the NVIDIA Source Code License - Non-commercial.
 # Full text can be found in LICENSE.md
-
+# python demo.py --demo ../images/ford --arch res --load_model /home/mathijs/ford/code/CenterPose/CenterPose/models/CenterPose/cereal_box_resnet_140.pth
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -97,10 +97,11 @@ if __name__ == '__main__':
 
     # Local machine configuration example for CenterPose
     # opt.c = 'cup' # Only meaningful when enables show_axes option
-    # opt.demo = "../images/CenterPose/cup/00007.png"
-    # opt.arch = 'dlav1_34'
-    # opt.load_model = f"../models/CenterPose/cup_mug_v1_140.pth"
-    # opt.debug = 2
+    opt.demo = "../images/ford"
+    opt.arch = 'res_101'
+    # opt.load_model = "../models/CenterPose/cereal_box_resnet_140.pth"
+    opt.load_model = "../exp/object_pose/25epoch/chair_last.pth"
+    opt.debug = 4
     # opt.show_axes = True
 
     # Local machine configuration example for CenterPoseTrack

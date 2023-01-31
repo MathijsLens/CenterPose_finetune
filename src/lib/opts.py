@@ -133,16 +133,16 @@ class opts(object):
         self.parser.add_argument('--not_rand_crop', action='store_true',
                                  help='not use the random crop data augmentation'
                                       'from CornerNet.')
-        self.parser.add_argument('--shift', type=float, default=0.05,
+        self.parser.add_argument('--shift', type=float, default=0.05,#0.05
                                  help='when not using random crop'
                                       'apply shift augmentation.')
-        self.parser.add_argument('--scale', type=float, default=0.4,
+        self.parser.add_argument('--scale', type=float, default=0.2,  #0.4
                                  help='when not using random crop'
                                       'apply scale augmentation.')
-        self.parser.add_argument('--rotate', type=float, default=0,
+        self.parser.add_argument('--rotate', type=float, default=0, #0
                                  help='when not using random crop'
                                       'apply rotation augmentation.')
-        self.parser.add_argument('--flip', type=float, default=0.5,
+        self.parser.add_argument('--flip', type=float, default=0.5,  #0.5
                                  help='probability of applying flip augmentation.')
         self.parser.add_argument('--no_color_aug', action='store_true',
                                  help='not use the color augmentation '
@@ -202,7 +202,7 @@ class opts(object):
                                  help='use pnp')
         self.parser.add_argument('--mug', action='store_true',
                                  help='target is a mug (only useful for training and evaluation)')
-        self.parser.add_argument('--num_symmetry', default=12,
+        self.parser.add_argument('--num_symmetry', default=1,
                                  help='the number of the symmetry for ground truths, idea comes from NOCS paper https://arxiv.org/abs/1901.02970')
 
         self.parser.add_argument('--cam_intrinsic', default=None, nargs='+', type=float,

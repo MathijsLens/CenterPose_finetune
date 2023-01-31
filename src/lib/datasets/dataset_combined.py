@@ -120,7 +120,8 @@ class ObjectPoseDataset(data.Dataset):
         # self.data_dir = os.path.join(opt.data_dir, 'outf_all_test')
        
         self.data_dir="../data/outf_all"
-       
+        with open("../data/outf_all\chair_train\mathijs/test.json") as f:
+                 self.json_data= json.load(f)
         
         self.img_dir = os.path.join(self.data_dir, f"{opt.c}_{split}")
         print("img_dir", self.img_dir)
@@ -176,21 +177,42 @@ class ObjectPoseDataset(data.Dataset):
 
         print(f'==> initializing objectron {opt.c}_{split} data.')
 
+        # eigen code
+        def in_json(imgpath):            
+            name=imgpath.split("\\")[-1]
+            for d in self.json_data:
+                if d["image_name"]== name and d["points"]!=[]:
+                    return True
+            else: 
+                return False
+            
+            
         #   Copy from DOPE code
-        def loadimages(root, datastyle="json", extensions=['png']):
+        def loadimages(root, datastyle="json", extensions=['png', "JPG"]):
             imgs = []
             loadimages.extensions = extensions
 
             def add_json_files(path, ):
                 for ext in loadimages.extensions:
                     for imgpath in glob.glob(path + "/*.{}".format(ext.replace('.', ''))):
-                        if exists(imgpath) and exists(imgpath.replace(ext, "json")):
-                            # Save img_path, video_id, frame_id, json_path
+                        
+                        
+                        # # moet worden : and in mathijs.json -> dan img.append()
+                        if exists(imgpath) and in_json(imgpath):
                             video_id = os.path.split(os.path.split(imgpath)[0])[1]
                             frame_id = os.path.splitext(os.path.basename(imgpath))[0]
-
                             imgs.append((imgpath, video_id, frame_id,
                                          imgpath.replace(ext, "json")))
+                        
+                        
+                        
+                        # if (exists(imgpath) and exists(imgpath.replace(ext, "json")))or (exists(imgpath) and in_json(imgpath)):
+                        #     # Save img_path, video_id, frame_id, json_path
+                        #     video_id = os.path.split(os.path.split(imgpath)[0])[1]
+                        #     frame_id = os.path.splitext(os.path.basename(imgpath))[0]
+
+                        #     imgs.append((imgpath, video_id, frame_id,
+                        #                  imgpath.replace(ext, "json")))
 
             def explore(path):
                 if not os.path.isdir(path):
@@ -204,7 +226,6 @@ class ObjectPoseDataset(data.Dataset):
                     add_json_files(path)
 
             explore(root)
-
             return imgs
 
         def load_data(path, extensions):
@@ -212,23 +233,26 @@ class ObjectPoseDataset(data.Dataset):
             return imgs
 
         self.images = []
-        print(self.img_dir)
-        self.images += load_data(self.img_dir, extensions=["png", 'jpg'])
+       
+        self.images += load_data(self.img_dir, extensions=["png", 'JPG'])
         self.num_samples = len(self.images)
         print('Loaded {} {} samples'.format(split, self.num_samples))
 
         # Group all the info by video_id
         # self.images save all the img_path, video_id, frame_id, json_path
         # Organize all the images (a dict of info) corresponding to the same video_id
-        print('Creating video index!')
-        self.videos = {}
-        for i in self.images:
-            new_item = i[1]  # according to the video_id
-            if new_item in self.videos:
-                self.videos[new_item].append(i)
-            else:
-                self.videos[new_item] = []
-                self.videos[new_item].append(i)
+        
+        
+        # comment out if nedded :)
+        # print('Creating video index!')
+        # self.videos = {}
+        # for i in self.images:
+        #     new_item = i[1]  # according to the video_id
+        #     if new_item in self.videos:
+        #         self.videos[new_item].append(i)
+        #     else:
+        #         self.videos[new_item] = []
+        #         self.videos[new_item].append(i)
 
     def __len__(self):
         return self.num_samples
@@ -295,36 +319,39 @@ class ObjectPoseDataset(data.Dataset):
         # np.random.seed(100)
 
         # <editor-fold desc="Data initialization">
-
         path_img, video_id, frame_id, path_json = self.images[index]
         img_path = path_img
-        with open(path_json) as f:
-            anns = json.load(f)
-        num_objs = min(len(anns['objects']), self.max_objs)
         
-        # print(index, anns) # anns contains a lot of data see : 
+        # with open(path_json) as f:
+        #     anns = json.load(f)
+        # num_objs = min(len(anns['objects']), self.max_objs)
+        with open("../data/outf_all/chair_train/objectron/00002.json") as f:
+            anns = json.load(f)
+        num_objs=1
+       # anns contains a lot of data see : print(anns)
 
         try:
             img = cv2.imread(img_path)
         except:
             return None
 
-        if self.opt.new_data_augmentation:
-            # Only apply albumentations on spatial data augmentation, nothing to do with gt label
-            transform = A.Compose([
-                A.MotionBlur(blur_limit=3, p=0.1),
-                A.Downscale(scale_min=0.6, scale_max=0.8, p=0.1),
-                A.GaussNoise(p=0.2),
-                # A.Blur(p=0.2),
-                # A.RandomBrightnessContrast(p=0.2),
-            ],
-            )
-            transformed = transform(image=img)
-            # Update image
-            img = transformed["image"]
+        # if self.opt.new_data_augmentation:
+        #     # Only apply albumentations on spatial data augmentation, nothing to do with gt label
+        #     transform = A.Compose([
+        #         A.MotionBlur(blur_limit=3, p=0.1),
+        #         A.Downscale(scale_min=0.6, scale_max=0.8, p=0.1),
+        #         A.GaussNoise(p=0.2),
+        #         # A.Blur(p=0.2),
+        #         # A.RandomBrightnessContrast(p=0.2),
+        #     ],
+        #     )
+        #     transformed = transform(image=img)
+        #     # Update image
+        #     img = transformed["image"]
 
         try:
             height, width = img.shape[0], img.shape[1]
+            
         except:
             return None
         c_ori = np.array([img.shape[1] / 2., img.shape[0] / 2.], dtype=np.float32)
@@ -964,23 +991,41 @@ class ObjectPoseDataset(data.Dataset):
         for k in range(num_objs):
             ann = anns['objects'][k]
 
-            # Todo: Only for chair category for now
-            if 'symmetric' in ann:
-                if ann['symmetric'] == 'True':
-                    num_symmetry = 4
-                else:
-                    num_symmetry = 1
+            # # Todo: Only for chair category for now
+            # if 'symmetric' in ann:
+            #     if ann['symmetric'] == 'True':
+            #         num_symmetry = 4
+            #     else:
+            #         num_symmetry = 1
 
-            if self.opt.c == 'cup':
-                if self.opt.tracking_task == True and \
-                        ((self.opt.mug == False and ann_pre['mug'] == True) or \
-                         (self.opt.mug == True and ann_pre['mug'] == False)):
-                    continue
+            # if self.opt.c == 'cup':
+            #     if self.opt.tracking_task == True and \
+            #             ((self.opt.mug == False and ann_pre['mug'] == True) or \
+            #              (self.opt.mug == True and ann_pre['mug'] == False)):
+            #         continue
 
             # Todo: Fixed as 0 for now
             cls_id = 0
-            pts_ori = np.array(ann['projected_cuboid'])
+            # pts_ori = np.array(ann['projected_cuboid'])
+                    
+            # find the good points out of the self.json_data 
+            name=img_path.split("\\")[-1]
+            self.json_data
+            for dict in self.json_data:
+                if dict["image_name"]== name:
+                    pts_ori=np.array(dict["points"])
+                    break
+            # invert y as 
+            for i,point in enumerate(pts_ori):
+                pts_ori[i][1]=height-pts_ori[i][1]
+            
+            
+                    
+                
+            
 
+            
+            
             # Only apply rotation on gt annotation when symmetry exists
             for id_symmetry in range(num_symmetry):
 
