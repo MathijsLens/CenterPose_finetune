@@ -1,1 +1,2 @@
-data/chair
+data/*
+*__pycache__/
